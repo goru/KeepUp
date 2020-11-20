@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">KeepUp</string>
+    <string name="system_alert_window_permission">"他のアプリ上に重ねて表示" の権限を有効にしてください。</string>
+    <string name="notification_name">通知</string>
+    <string name="notification_title">実行中</string>
+    <string name="notification_text">タップするとKeepUpを終了します。</string>
+    <string name="app_not_found">KeepUp: GoogleKeepがインストールされていません。</string>
+    <string name="app_start">KeepUpを開始しました。</string>
+    <string name="app_stop">KeepUpを終了しました。</string>
+</resources>

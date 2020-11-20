@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">KeepUp</string>
+    <string name="system_alert_window_permission">Please allow permission to display over other apps.</string>
+    <string name="notification_name">Alerts</string>
+    <string name="notification_title">Running</string>
+    <string name="notification_text">Tap to shutdown KeepUp.</string>
+    <string name="app_not_found">KeepUp: GoogleKeep is not installed.</string>
+    <string name="app_start">KeepUp is started.</string>
+    <string name="app_stop">KeepUp is stopped.</string>
+</resources>
