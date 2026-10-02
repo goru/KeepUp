@@ -23,24 +23,32 @@ public class UserPresentReceiver extends BroadcastReceiver {
             return;
         }
 
-        try {
-//            String packageName = "com.android.settings";
-//            String className = "com.android.settings.Settings";
-//            String packageName = "com.twitter.android";
-//            String className = "com.twitter.android.StartActivity";
-            String packageName = "com.google.android.keep";
-            String className = "com.google.android.keep.activities.BrowseActivity";
+//        String packageName = "com.android.settings";
+//        String packageName = "com.twitter.android";
+        String packageName = "com.google.android.keep";
 
-            Intent i = new Intent();
-            i.setClassName(packageName, className);
+        // Launch the same activity as the launcher does, so that this keeps working
+        // even if the app changes its internal activity names.
+        // The package must be listed in <queries> in AndroidManifest.xml to be visible.
+        Intent i = context.getPackageManager().getLaunchIntentForPackage(packageName);
+        if (i == null) {
+            showAppNotFound(context);
+            return;
+        }
+
+        try {
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.getApplicationContext().startActivity(i);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(
-                    context.getApplicationContext(),
-                    R.string.app_not_found,
-                    Toast.LENGTH_LONG)
-                    .show();
+            showAppNotFound(context);
         }
+    }
+
+    private void showAppNotFound(Context context) {
+        Toast.makeText(
+                context.getApplicationContext(),
+                R.string.app_not_found,
+                Toast.LENGTH_LONG)
+                .show();
     }
 }
