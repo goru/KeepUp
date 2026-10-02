@@ -33,7 +33,7 @@ public class UserPresentReceiver extends BroadcastReceiver {
 
             Intent i = new Intent();
             i.setClassName(packageName, className);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.getApplicationContext().startActivity(i);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(
