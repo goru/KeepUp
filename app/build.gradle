@@ -8,7 +8,7 @@ def buildTime = java.time.ZonedDateTime.now(java.time.ZoneId.of('Asia/Tokyo'))
 
 android {
     namespace 'org.gorugle.keepup'
-    compileSdk 30
+    compileSdk 34
 
     defaultConfig {
         applicationId "org.gorugle.keepup"
@@ -48,5 +48,6 @@ dependencies {
     implementation libs.material
     implementation libs.constraintlayout
     testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 }
