@@ -1,0 +1,90 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # need full history + tags for the notes
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: app-debug
+          path: dist
+
+      - name: Build release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          NEW: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          PREV=$(git describe --tags --abbrev=0 "${NEW}^" 2>/dev/null || true)
+
+          # GitHub's own generator: one bullet per merged PR in the range.
+          body=$(gh api "repos/$REPO/releases/generate-notes" \
+            -f tag_name="$NEW" ${PREV:+-f previous_tag_name="$PREV"} --jq .body)
+
+          # Commits pushed straight to the branch (PRs come in as merge commits,
+          # which --no-merges drops, so this leaves only the direct ones).
+          direct=$(git log --first-parent --no-merges "${PREV:+$PREV..}$NEW" --pretty='- %s')
+
+          # GitHub returns the PR list under "## What's Changed" -- retitle it so
+          # the two sources get their own sections.
+          if [ "$(printf '%s\n' "$body" | head -n1)" = "## What's Changed" ]; then
+            rest=$(printf '%s\n' "$body" | tail -n +2)
+            body=$(printf "## What's Changed by PR\n%s" "$rest")
+          fi
+
+          # Directly-pushed commits go under their own "## What's Changed" on top.
+          if [ -n "$direct" ]; then
+            body=$(printf "## What's Changed\n%s\n\n%s" "$direct" "$body")
+          fi
+
+          printf '%s\n' "$body" > notes.md
+          cat notes.md
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/*.apk \
+            --title "$GITHUB_REF_NAME" \
+            --notes-file notes.md
