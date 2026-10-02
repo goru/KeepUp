@@ -17,6 +17,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
 public class KeepUpService extends Service {
 
     private static final String TAG = "KeepUpService";
@@ -46,12 +48,6 @@ public class KeepUpService extends Service {
     public void onCreate() {
         Log.d(TAG, "onCreate");
 
-        Toast.makeText(
-                getApplicationContext(),
-                R.string.app_start,
-                Toast.LENGTH_LONG)
-                .show();
-
         // Watch the overlay permission so that the state is updated
         // without going back from the settings screen
         appOpsManager = (AppOpsManager)getSystemService(Context.APP_OPS_SERVICE);
@@ -64,6 +60,14 @@ public class KeepUpService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
+
+        // Show this on every start so that launching the app while the service
+        // is already running also gives feedback
+        Toast.makeText(
+                getApplicationContext(),
+                R.string.app_start,
+                Toast.LENGTH_LONG)
+                .show();
 
         NotificationManager manager =
                 (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -108,9 +112,14 @@ public class KeepUpService extends Service {
         // Launching Keep from the background requires the overlay permission,
         // so receive ACTION_USER_PRESENT only while it is granted
         if (granted && !receiverRegistered) {
-            getApplicationContext().registerReceiver(
+            // ACTION_USER_PRESENT is sent by SystemUI, which runs with its own uid,
+            // so the receiver must be exported. It is a protected broadcast
+            // that only the system can send.
+            ContextCompat.registerReceiver(
+                    getApplicationContext(),
                     receiver,
-                    new IntentFilter(Intent.ACTION_USER_PRESENT));
+                    new IntentFilter(Intent.ACTION_USER_PRESENT),
+                    ContextCompat.RECEIVER_EXPORTED);
             receiverRegistered = true;
         } else if (!granted && receiverRegistered) {
             getApplicationContext().unregisterReceiver(receiver);

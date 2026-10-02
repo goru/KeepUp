@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">KeepUp</string>
     <string name="system_alert_window_permission">Please turn on \"Display over other apps\".</string>
+    <string name="notification_permission">Please allow notifications.</string>
     <string name="notification_name">Alerts</string>
     <string name="notification_title">Running</string>
     <string name="notification_text">Tap to shutdown KeepUp.</string>

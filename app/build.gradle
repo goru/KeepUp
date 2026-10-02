@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId "org.gorugle.keepup"
         minSdk 30
-        targetSdk 30
+        targetSdk 34
         // Release builds on CI pass these from the tag (vX.Y.Z+yyMMddHH)
         versionCode = (project.findProperty('appVersionCode') ?: buildTime).toInteger()
         versionName = project.findProperty('appVersionName') ?: "0.0.0-dev+${buildTime}"

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">KeepUp</string>
     <string name="system_alert_window_permission">「他のアプリの上に重ねて表示」を有効にしてください。</string>
+    <string name="notification_permission">通知を許可してください。</string>
     <string name="notification_name">通知</string>
     <string name="notification_title">実行中</string>
     <string name="notification_text">タップするとKeepUpを終了します。</string>
