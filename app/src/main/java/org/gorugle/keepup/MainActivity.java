@@ -18,27 +18,23 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        if (!Settings.canDrawOverlays(this)) {
-            Log.d(TAG, "ACTION_MANAGE_OVERLAY_PERMISSION");
+        // Start the service even without the overlay permission.
+        // The service watches the permission and updates its notification.
+        Log.d(TAG, "startForegroundService");
 
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+        startForegroundService(new Intent(this, KeepUpService.class));
+
+        if (!Settings.canDrawOverlays(this)) {
+            Log.d(TAG, "ACTION_APPLICATION_DETAILS_SETTINGS");
+
+            startActivity(KeepUpService.createOverlaySettingsIntent(this));
 
             Toast.makeText(
                     getApplicationContext(),
                     R.string.system_alert_window_permission,
                     Toast.LENGTH_LONG)
                     .show();
-
-            finishAndRemoveTask();
-
-            return;
         }
-
-        Log.d(TAG, "startForegroundService");
-
-        startForegroundService(new Intent(this, KeepUpService.class));
 
         finishAndRemoveTask();
     }

@@ -3,7 +3,6 @@ package org.gorugle.keepup;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.provider.Settings;
 import android.util.Log;
 
 public class BootCompletedReceiver extends BroadcastReceiver {
@@ -18,11 +17,8 @@ public class BootCompletedReceiver extends BroadcastReceiver {
 
         Log.d(TAG, "onReceive");
 
-        if (!Settings.canDrawOverlays(context)) {
-            Log.d(TAG, "ACTION_MANAGE_OVERLAY_PERMISSION");
-            return;
-        }
-
+        // Start the service even without the overlay permission.
+        // The service notifies the user that the permission is required.
         Log.d(TAG, "startForegroundService");
 
         context.startForegroundService(new Intent(context, KeepUpService.class));

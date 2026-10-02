@@ -37,15 +37,10 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".UserPresentReceiver"
-            android:enabled="true"
-            android:exported="true" />
-
         <service
             android:name=".KeepUpService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
 
     </application>
 
