@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+// Build time in JST (e.g. 26100301), used as the version for local builds
+def buildTime = java.time.ZonedDateTime.now(java.time.ZoneId.of('Asia/Tokyo'))
+        .format(java.time.format.DateTimeFormatter.ofPattern('yyMMddHH'))
+
 android {
     namespace 'org.gorugle.keepup'
     compileSdk 30
@@ -10,8 +14,9 @@ android {
         applicationId "org.gorugle.keepup"
         minSdk 30
         targetSdk 30
-        versionCode 1
-        versionName "1.0"
+        // Release builds on CI pass these from the tag (vX.Y.Z+yyMMddHH)
+        versionCode = (project.findProperty('appVersionCode') ?: buildTime).toInteger()
+        versionName = project.findProperty('appVersionName') ?: "0.0.0-dev+${buildTime}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
