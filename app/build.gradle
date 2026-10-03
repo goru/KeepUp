@@ -7,38 +7,38 @@ def buildTime = java.time.ZonedDateTime.now(java.time.ZoneId.of('Asia/Tokyo'))
         .format(java.time.format.DateTimeFormatter.ofPattern('yyMMddHH'))
 
 android {
-    namespace 'org.gorugle.keepup'
-    compileSdk 34
+    namespace = 'org.gorugle.keepup'
+    compileSdk = 34
 
     defaultConfig {
-        applicationId "org.gorugle.keepup"
-        minSdk 30
-        targetSdk 34
+        applicationId = "org.gorugle.keepup"
+        minSdk = 30
+        targetSdk = 34
         // Release builds on CI pass these from the tag (vX.Y.Z+yyMMddHH)
         versionCode = (project.findProperty('appVersionCode') ?: buildTime).toInteger()
         versionName = project.findProperty('appVersionName') ?: "0.0.0-dev+${buildTime}"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
+            storeFile = file('debug.keystore')
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
-        viewBinding true
+        viewBinding = true
     }
 }
 
